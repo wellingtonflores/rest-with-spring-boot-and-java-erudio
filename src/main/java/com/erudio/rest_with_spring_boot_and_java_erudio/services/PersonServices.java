@@ -1,59 +1,60 @@
 package com.erudio.rest_with_spring_boot_and_java_erudio.services;
 
+import com.erudio.rest_with_spring_boot_and_java_erudio.controllers.PersonController;
 import com.erudio.rest_with_spring_boot_and_java_erudio.exceptions.ResourceNotFoundException;
 import com.erudio.rest_with_spring_boot_and_java_erudio.model.Person;
 import com.erudio.rest_with_spring_boot_and_java_erudio.repositories.PersonRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
-import java.util.ArrayList;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.linkTo;
+import static org.springframework.hateoas.server.mvc.WebMvcLinkBuilder.methodOn;
 import java.util.List;
-import java.util.concurrent.atomic.AtomicLong;
-import java.util.logging.Logger;
 
 @Service
 public class PersonServices {
-
-    private Logger logger = Logger.getLogger(PersonServices.class.getName());
 
     @Autowired
     PersonRepository repository;
 
     public List<Person> findAll(){
-
-        logger.info("Finding all people!");
-
-        return repository.findAll();
+    	
+    	List<Person> persons = repository.findAll();
+    	persons.stream().forEach(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));
+    	
+        return persons;
     }
 
     public Person findById(Long id){
-
-        logger.info("Finding one person!");
-
-        return repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
+    	
+    	var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
+    	entity.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
+    	return entity;
     }
 
     public Person create(Person person){
-        logger.info("Creating one person!");
-        return repository.save(person);
+    	var entity = repository.save(person);
+    	entity.add(linkTo(methodOn(PersonController.class).findById(person.getKey())).withSelfRel());
+        return entity;
     }
 
     public Person update(Person person){
-        logger.info("Updating one person!");
 
-        var entity = repository.findById(person.getId())
+        var entity = repository.findById(person.getKey())
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
 
-        person.setFirstName(person.getFirstName());
-        person.setLastName(person.getLastName());
-        person.setAddress(person.getAddress());
-        person.setGender(person.getGender());
+        entity.setFirstName(person.getFirstName());
+        entity.setLastName(person.getLastName());
+        entity.setAddress(person.getAddress());
+        entity.setGender(person.getGender());
+        
+        var updatedPerson = repository.save(person);
+        
+        updatedPerson.add(linkTo(methodOn(PersonController.class).findById(updatedPerson.getKey())).withSelfRel());
 
-        return repository.save(person);
+        return updatedPerson;
     }
 
     public void delete(Long id){
-        logger.info("Deleting one person");
 
         var entity = repository.findById(id)
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));

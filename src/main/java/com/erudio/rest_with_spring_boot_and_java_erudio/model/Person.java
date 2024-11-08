@@ -5,13 +5,25 @@ import jakarta.persistence.*;
 import java.io.Serializable;
 import java.util.Objects;
 
+import org.springframework.hateoas.RepresentationModel;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
+import com.fasterxml.jackson.annotation.JsonRootName;
+import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+
 @Entity
 @Table(name = "person")
-public class Person implements Serializable {
+@JsonPropertyOrder({"id", "firstName", "lastName", "address", "gender"})
+public class Person extends RepresentationModel<Person> implements Serializable {
 
-    @Id
+	private static final long serialVersionUID = 1L;
+
+	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private Long id;
+	@Column(name = "id")
+	@JsonProperty(value = "id")
+    private Long key;
 
     @Column(name = "first_name", nullable = false, length = 80)
     private String firstName;
@@ -28,23 +40,23 @@ public class Person implements Serializable {
     public Person(){
     }
 
-    public Person(Long id, String gender, String address, String lastName, String firstName) {
-        this.id = id;
+    public Person(Long key, String gender, String address, String lastName, String firstName) {
+        this.key = key;
         this.gender = gender;
         this.address = address;
         this.lastName = lastName;
         this.firstName = firstName;
     }
 
-    public Long getId() {
-        return id;
-    }
+    public Long getKey() {
+		return key;
+	}
 
-    public void setId(Long id) {
-        this.id = id;
-    }
+	public void setKey(Long key) {
+		this.key = key;
+	}
 
-    public String getGender() {
+	public String getGender() {
         return gender;
     }
 
@@ -76,16 +88,27 @@ public class Person implements Serializable {
         this.firstName = firstName;
     }
 
-    @Override
-    public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
-        Person person = (Person) o;
-        return Objects.equals(id, person.id);
-    }
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = super.hashCode();
+		result = prime * result + Objects.hash(address, firstName, gender, key, lastName);
+		return result;
+	}
 
-    @Override
-    public int hashCode() {
-        return Objects.hashCode(id);
-    }
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (!super.equals(obj))
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Person other = (Person) obj;
+		return Objects.equals(address, other.address) && Objects.equals(firstName, other.firstName)
+				&& Objects.equals(gender, other.gender) && Objects.equals(key, other.key)
+				&& Objects.equals(lastName, other.lastName);
+	}
+
+    
 }
