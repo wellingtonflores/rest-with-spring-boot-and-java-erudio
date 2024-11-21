@@ -1,6 +1,7 @@
 package com.erudio.rest_with_spring_boot_and_java_erudio.services;
 
 import com.erudio.rest_with_spring_boot_and_java_erudio.controllers.PersonController;
+import com.erudio.rest_with_spring_boot_and_java_erudio.exceptions.RequiredObjectNullException;
 import com.erudio.rest_with_spring_boot_and_java_erudio.exceptions.ResourceNotFoundException;
 import com.erudio.rest_with_spring_boot_and_java_erudio.model.Person;
 import com.erudio.rest_with_spring_boot_and_java_erudio.repositories.PersonRepository;
@@ -19,25 +20,28 @@ public class PersonServices {
     public List<Person> findAll(){
     	
     	List<Person> persons = repository.findAll();
-    	persons.stream().forEach(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));
+    	persons.forEach(p -> p.add(linkTo(methodOn(PersonController.class).findById(p.getKey())).withSelfRel()));
     	
         return persons;
     }
 
     public Person findById(Long id){
     	
-    	var entity = repository.findById(id).orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
+    	var entity = repository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));
     	entity.add(linkTo(methodOn(PersonController.class).findById(id)).withSelfRel());
     	return entity;
     }
 
     public Person create(Person person){
+        if(person == null) throw new RequiredObjectNullException();
     	var entity = repository.save(person);
     	entity.add(linkTo(methodOn(PersonController.class).findById(person.getKey())).withSelfRel());
         return entity;
     }
 
     public Person update(Person person){
+        if(person == null) throw new RequiredObjectNullException();
 
         var entity = repository.findById(person.getKey())
                 .orElseThrow(() -> new ResourceNotFoundException("No records found for this ID"));

@@ -9,8 +9,7 @@ import org.springframework.hateoas.RepresentationModel;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import com.fasterxml.jackson.annotation.JsonRootName;
-import com.fasterxml.jackson.dataformat.xml.annotation.JacksonXmlRootElement;
+
 
 @Entity
 @Table(name = "person")
