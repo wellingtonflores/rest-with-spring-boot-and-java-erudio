@@ -3,6 +3,8 @@ package com.erudio.rest_with_spring_boot_and_java_erudio.controllers;
 import com.erudio.rest_with_spring_boot_and_java_erudio.model.Person;
 import com.erudio.rest_with_spring_boot_and_java_erudio.services.PersonServices;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -12,6 +14,7 @@ import java.util.List;
 
 @RestController
 @RequestMapping(value = "/api/person")
+@Tag(name = "People", description = "Endpoints for Managing People")
 public class PersonController {
 
     @Autowired
@@ -24,6 +27,11 @@ public class PersonController {
     }
 
     @GetMapping(produces = {MediaType.APPLICATION_JSON_VALUE, MediaType.APPLICATION_XML_VALUE})
+    @Operation(summary = "Finds all People", description = "Finds all People",
+            tags = {"People"},
+    responses = {
+
+    })
     public ResponseEntity<List<Person>> findAll() {
         List<Person> people = services.findAll();
         return ResponseEntity.ok(people);
