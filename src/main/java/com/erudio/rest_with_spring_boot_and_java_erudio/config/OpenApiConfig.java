@@ -14,7 +14,7 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("RESTful API with Java 21 and Spring Boot")
                         .version("v1")
-                        .description("API para gerenciar endpoints básicos de pessoas")
+                        .description("API para gerenciar endpoints básicos de pessoas e livros")
                         .termsOfService("Some term of services")
                         .license(new License()
                                 .name("Apache 2.0")

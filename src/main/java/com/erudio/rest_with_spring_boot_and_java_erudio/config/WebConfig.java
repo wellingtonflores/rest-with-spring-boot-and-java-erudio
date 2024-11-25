@@ -9,8 +9,8 @@ import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 public class WebConfig implements WebMvcConfigurer{
 
 	@Override
-	public void configureContentNegotiation(ContentNegotiationConfigurer configurer) {
-		configurer
+	public void configureContentNegotiation(ContentNegotiationConfigurer configure) {
+		configure
 		.favorParameter(false)
 				.ignoreAcceptHeader(false)
 				.useRegisteredExtensionsOnly(false)
