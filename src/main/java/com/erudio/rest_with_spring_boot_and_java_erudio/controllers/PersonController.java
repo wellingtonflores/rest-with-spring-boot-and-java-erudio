@@ -16,6 +16,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
+@CrossOrigin
 @RestController
 @RequestMapping(value = "/api/person")
 @Tag(name = "People", description = "Endpoints for Managing People")
