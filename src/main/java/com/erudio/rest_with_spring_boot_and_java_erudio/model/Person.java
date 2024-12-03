@@ -16,8 +16,6 @@ import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 @JsonPropertyOrder({"id", "firstName", "lastName", "address", "gender"})
 public class Person extends RepresentationModel<Person> implements Serializable {
 
-	private static final long serialVersionUID = 1L;
-
 	@Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
